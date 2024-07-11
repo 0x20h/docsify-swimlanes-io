@@ -24,7 +24,7 @@ const plugin = (hook) => {
     // Extract content in swimlanes-io tags to avoid markdown parsing
     extracted = []
     var match
-    var re = /(\n\s{0,3})<swimlanes-io>([\s\S]*?)<\/swimlanes-io>/gi;
+    var re = /(\n\s{0,3})<swimlanes-io[^\n>]*>([\s\S]*?)<\/swimlanes-io>/gi;
     while (match = re.exec(content)) {
       extracted.push(match[2])
     }
