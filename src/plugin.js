@@ -24,9 +24,9 @@ const plugin = (hook) => {
     // Extract content in swimlanes-io tags to avoid markdown parsing
     extracted = []
     var match
-    var re = /(\n\s{0,3})<swimlanes-io[^\n>]*>([\s\S]*?)<\/swimlanes-io>/gi;
+    var re = /(\n\s{0,3})<swimlanes-io([^\n>]*)>([\s\S]*?)<\/swimlanes-io>/gi;
     while (match = re.exec(content)) {
-      extracted.push(match[2])
+      extracted.push([match[2], match[3]])
     }
     return content.replace(re, '$1```swimlanes-io\n[extracted]\n```')
   });
@@ -40,10 +40,10 @@ const plugin = (hook) => {
     const iframeStyle = 'border:none; margin:0px; width:100%; height:100%';
     
     htmlElement.querySelectorAll('pre[data-lang=swimlanes-io]').forEach((el, i) => {
-      const content = el.textContent.includes('[extracted]') ? extracted.shift() : el.textContent
+      const [modifiers, content] = el.textContent.includes('[extracted]') ? extracted.shift() : el.textContent
       const state = encode(content);
       const divId = '__swimlanes-io-' + i;
-      const iframeSrc = `${htmlSrc}#${state}#${i}`
+      const iframeSrc = `${htmlSrc}#${state}#${i}#${modifiers.trim().split(' ').join('#')}`
 
       let container = document.createElement('div');
       container.setAttribute('id', divId);
